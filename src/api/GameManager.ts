@@ -203,9 +203,9 @@ class GameManager extends EventEmitter implements AbstractGameManager {
     const planetVoyageIdMap: Map<LocationId, VoyageId[]> = new Map();
 
     const minedChunks = Array.from(await persistentChunkStore.allChunks());
-    const minedPlanetIds = new Set(
-      _.flatMap(minedChunks, (c) => c.planetLocations).map((l) => l.hash)
-    );
+    const minedPlanetIds = new Set(_.flatMap(minedChunks, (c) => c.planetLocations).map(
+      (l) => l.hash
+    ));
     terminalEmitter.println('(2/5) Getting planet IDs...');
     const loadedPlanetIds = await contractsAPI.getTouchedPlanetIds(
       storedTouchedPlanetIds.length
