@@ -23,7 +23,8 @@ import { callWithRetry, sleep } from '../utils/Utils';
 class EthConnection extends EventEmitter {
   // rpc-df only has CORS enabled for zkga.me, not localhost
   private static readonly XDAI_DEFAULT_URL = window.origin.includes('localhost')
-    ? 'https://rpc.xdaichain.com/'
+    // ? 'https://rpc.xdaichain.com/'
+    ? 'http://localhost:8555'
     : 'https://rpc-df.xdaichain.com/';
 
   private static instance: EthConnection | null = null;
@@ -42,7 +43,7 @@ class EthConnection extends EventEmitter {
         localStorage.getItem('XDAI_RPC_ENDPOINT_v5') ||
         EthConnection.XDAI_DEFAULT_URL;
     } else {
-      url = 'http://localhost:8545';
+      url = 'http://localhost:8555';
     }
     this.setRpcEndpoint(url);
     this.knownAddresses = [];
