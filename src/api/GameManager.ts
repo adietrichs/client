@@ -538,7 +538,7 @@ class GameManager extends EventEmitter implements AbstractGameManager {
         this.emit(GameManagerEvent.DiscoveredNewChunk, chunk);
       }
     );
-    this.minerManager.startExplore();
+    //this.minerManager.startExplore();
   }
 
   setMiningPattern(pattern: MiningPattern): void {
