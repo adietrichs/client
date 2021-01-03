@@ -1087,7 +1087,8 @@ class GameManager extends EventEmitter implements AbstractGameManager {
     from: LocationId,
     to: LocationId,
     forces: number,
-    silver: number
+    silver: number,
+    distMax: number | null = null
   ): GameManager {
     if (this.checkGameHasEnded()) return this;
     localStorage.setItem(
@@ -1120,7 +1121,7 @@ class GameManager extends EventEmitter implements AbstractGameManager {
     const xDiff = newX - oldX;
     const yDiff = newY - oldY;
 
-    const distMax = Math.ceil(Math.sqrt(xDiff ** 2 + yDiff ** 2));
+    distMax = distMax || Math.ceil(Math.sqrt(xDiff ** 2 + yDiff ** 2));
 
     const shipsMoved = forces;
     const silverMoved = silver;
