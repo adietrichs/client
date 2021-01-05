@@ -728,10 +728,7 @@ class GameManager extends EventEmitter implements AbstractGameManager {
   }
 
   async verifyTwitter(twitter: string): Promise<boolean> {
-    if (!this.account) return Promise.resolve(false);
-    const success = await verifyTwitterHandle(twitter, this.account);
-    await this.refreshTwitters();
-    return success;
+    return false;
   }
 
   private checkGameHasEnded(): boolean {
