@@ -148,6 +148,13 @@ class EthConnection extends EventEmitter {
     return CheckedTypeUtils.address(this.signer.address);
   }
 
+  public getPlayerAddress(): EthAddress {
+    if (!this.playerContract) {
+      throw new Error('player contract not yet loaded');
+    }
+    return CheckedTypeUtils.address(this.playerContract.address);
+  }
+
   public getNonce(): Promise<number> {
     // throws if no account has been set yet
     if (!this.signer) {

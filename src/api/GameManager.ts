@@ -83,6 +83,7 @@ import UIEmitter from '../utils/UIEmitter';
 
 class GameManager extends EventEmitter implements AbstractGameManager {
   private readonly account: EthAddress | null;
+  private readonly playerAddress: EthAddress | null;
   private readonly players: Map<string, Player>;
   private readonly contractsAPI: ContractsAPI;
   private readonly persistentChunkStore: PersistentChunkStore;
@@ -105,6 +106,7 @@ class GameManager extends EventEmitter implements AbstractGameManager {
 
   private constructor(
     account: EthAddress | null,
+    playerAddress: EthAddress | null,
     balance: number,
     players: Map<string, Player>,
     touchedPlanets: Map<LocationId, Planet>,
@@ -123,6 +125,7 @@ class GameManager extends EventEmitter implements AbstractGameManager {
     super();
 
     this.account = account;
+    this.playerAddress = playerAddress;
     this.balance = balance;
     this.players = players;
     this.worldRadius = worldRadius;
@@ -183,8 +186,9 @@ class GameManager extends EventEmitter implements AbstractGameManager {
 
     // then we initialize the local storage manager and SNARK helper
     const account = await EthConnection.getInstance().getAddress();
+    const playerAddress = EthConnection.getInstance().getPlayerAddress();
     const balance = await EthConnection.getInstance().getBalance(account);
-    const persistentChunkStore = await PersistentChunkStore.create(account);
+    const persistentChunkStore = await PersistentChunkStore.create(playerAddress);
     const possibleHomes = await persistentChunkStore.getHomeLocations();
     const storedTouchedPlanetIds = await persistentChunkStore.getSavedTouchedPlanetIds();
 
@@ -257,7 +261,7 @@ class GameManager extends EventEmitter implements AbstractGameManager {
       heldArtifactIds,
       true
     );
-    const myArtifacts = await contractsAPI.getPlayerArtifacts(account);
+    const myArtifacts = await contractsAPI.getPlayerArtifacts(playerAddress);
     const knownArtifacts: Map<ArtifactId, Artifact> = new Map();
     for (const artifact of [...heldArtifacts, ...myArtifacts]) {
       knownArtifacts.set(artifact.id, artifact);
@@ -275,6 +279,7 @@ class GameManager extends EventEmitter implements AbstractGameManager {
 
     const gameManager = new GameManager(
       account,
+      playerAddress,
       balance,
       players,
       touchedAndMinedPlanets,
@@ -363,7 +368,7 @@ class GameManager extends EventEmitter implements AbstractGameManager {
 
     // we only want to initialize the mining manager if the player has already joined the game
     // if they haven't, we'll do this once the player has joined the game
-    if (!!homeLocation && players.has(account as string)) {
+    if (!!homeLocation && players.has(playerAddress as string)) {
       gameManager.initMiningManager(homeLocation.coords);
     }
 
@@ -428,7 +433,7 @@ class GameManager extends EventEmitter implements AbstractGameManager {
   }
 
   public getAccount(): EthAddress | null {
-    return this.account;
+    return this.playerAddress;
   }
 
   public getContractAddress(): EthAddress {
@@ -562,15 +567,15 @@ class GameManager extends EventEmitter implements AbstractGameManager {
   }
 
   hasJoinedGame(): boolean {
-    return this.players.has(this.account as string);
+    return this.players.has(this.playerAddress as string);
   }
 
   // gets both deposited artifacts that are on planets i own as well as artifacts i own
   getMyArtifacts(): Artifact[] {
-    if (!this.account) return [];
-    const ownedByMe = this.entityStore.getArtifactsOwnedBy(this.account);
+    if (!this.playerAddress) return [];
+    const ownedByMe = this.entityStore.getArtifactsOwnedBy(this.playerAddress);
     const onPlanetsOwnedByMe = this.entityStore.getArtifactsOnPlanetsOwnedBy(
-      this.account
+      this.playerAddress
     );
     return [...ownedByMe, ...onPlanetsOwnedByMe];
   }
@@ -1133,7 +1138,7 @@ class GameManager extends EventEmitter implements AbstractGameManager {
 
     const oldPlanet = this.entityStore.getPlanetWithLocation(oldLocation);
 
-    if (!this.account || !oldPlanet || oldPlanet.owner !== this.account) {
+    if (!this.playerAddress || !oldPlanet || oldPlanet.owner !== this.playerAddress) {
       throw new Error('attempted to move from a planet not owned by player');
     }
     const actionId = getRandomActionId();

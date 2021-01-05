@@ -468,17 +468,18 @@ export default function GameLandingPage(_props: { replayMode: boolean }) {
     const ethConnection = EthConnection.getInstance();
 
     const address = ethConnection.getAddress();
-    const isWhitelisted = await isAddressWhitelisted(address);
+    const playerAddress = ethConnection.getPlayerAddress();
+    const isWhitelisted = await isAddressWhitelisted(playerAddress);
 
     terminalEmitter.bashShell('df join v0.5');
     terminalEmitter.print('Checking if whitelisted... (address ');
-    terminalEmitter.print(address, TerminalTextStyle.White);
+    terminalEmitter.print(playerAddress, TerminalTextStyle.White);
     terminalEmitter.println(')');
 
     if (isWhitelisted) {
       terminalEmitter.println('Player whitelisted.', TerminalTextStyle.Green);
       terminalEmitter.println(
-        `Welcome, player ${address}.`,
+        `Welcome, player ${playerAddress}.`,
         TerminalTextStyle.White
       );
       if (!isProd) {
@@ -596,7 +597,7 @@ export default function GameLandingPage(_props: { replayMode: boolean }) {
 
   const advanceStateFromAskPlayerEmail = async () => {
     const terminalEmitter = TerminalEmitter.getInstance();
-    const address = EthConnection.getInstance().getAddress();
+    const playerAddress = EthConnection.getInstance().getPlayerAddress();
 
     terminalEmitter.print(
       'Enter your email address. ',
@@ -606,7 +607,7 @@ export default function GameLandingPage(_props: { replayMode: boolean }) {
       "We'll use this email address to notify you if you win a prize."
     );
     const email = await getUserInput();
-    const response = await submitPlayerEmail(email, address);
+    const response = await submitPlayerEmail(email, playerAddress);
     if (response === EmailResponse.Success) {
       await submitHiddenEmailForm(email);
       terminalEmitter.println('Email successfully recorded.');
