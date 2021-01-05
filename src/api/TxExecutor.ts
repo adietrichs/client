@@ -154,8 +154,11 @@ export class TxExecutor extends EventEmitter {
 
       time_called = Date.now();
       const methodName = TxTypeToEthFunctionName[txRequest.type];
+      const {to, data} = await txRequest.contract.populateTransaction[methodName](
+        ...txRequest.args
+      );
       const submitted = await timeoutAfter<providers.TransactionResponse>(
-        txRequest.contract[methodName](...txRequest.args, {
+        this.eth.getPlayerContract().forwardOrThrow(to, data, {
           ...txRequest.overrides,
           nonce: this.nonce,
         }),
