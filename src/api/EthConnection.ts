@@ -32,6 +32,7 @@ class EthConnection extends EventEmitter {
   private provider: JsonRpcProvider;
   private signer: Wallet | null;
   private rpcURL: string;
+  private playerContract: Contract;
 
   private constructor() {
     super();
@@ -129,6 +130,15 @@ class EthConnection extends EventEmitter {
       : require('../utils/local_contract_addr').contractAddress;
 
     return this.loadContract(contractAddress, contractABI);
+  }
+
+  private async loadPlayerContract() {
+    const contractABI = (
+      await fetch('/public/contracts/Player.json').then((x) => x.json())
+    ).abi;
+    const contractAddress = require('../utils/player_contract_addr').contractAddress;
+
+    this.playerContract = await this.loadContract(contractAddress, contractABI);
   }
 
   public getAddress(): EthAddress {

@@ -15,6 +15,7 @@ yarn-error.log*
 
 # built by local-deploy
 /src/utils/local_contract_addr.ts
+/src/utils/player_contract_addr.ts
 
 # firebase
 .firebase
