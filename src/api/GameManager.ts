@@ -1475,6 +1475,10 @@ class GameManager extends EventEmitter implements AbstractGameManager {
   public getUIEventEmitter() {
     return UIEmitter.getInstance();
   }
+
+  public locationIdToDecStr(locationId: LocationId): string {
+    return CheckedTypeUtils.locationIdToDecStr(locationId);
+  }
 }
 
 export default GameManager;

@@ -460,4 +460,6 @@ export default interface AbstractGameManager extends EventEmitter {
    * Helpful for listening to user input events.
    */
   getUIEventEmitter(): UIEmitter;
+
+  locationIdToDecStr(locationId: LocationId): string;
 }
