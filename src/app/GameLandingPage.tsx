@@ -384,7 +384,7 @@ export default function GameLandingPage(_props: { replayMode: boolean }) {
     } else {
       const addr = knownAddrs[selection - 1];
       try {
-        ethConnection.setAccount(addr);
+        await ethConnection.setAccount(addr);
         initState = InitState.ACCOUNT_SET;
       } catch (e) {
         terminalEmitter.println(
@@ -404,7 +404,7 @@ export default function GameLandingPage(_props: { replayMode: boolean }) {
     const newAddr = CheckedTypeUtils.address(newWallet.address);
     try {
       ethConnection.addAccount(newSKey);
-      ethConnection.setAccount(newAddr);
+      await ethConnection.setAccount(newAddr);
       terminalEmitter.println(
         `Created new burner wallet with address ${newAddr}.`
       );
@@ -452,7 +452,7 @@ export default function GameLandingPage(_props: { replayMode: boolean }) {
     try {
       const newAddr = CheckedTypeUtils.address(utils.computeAddress(newSKey));
       ethConnection.addAccount(newSKey);
-      ethConnection.setAccount(newAddr);
+      await ethConnection.setAccount(newAddr);
       terminalEmitter.println(`Imported account with address ${newAddr}.`);
       initState = InitState.ACCOUNT_SET;
     } catch (e) {

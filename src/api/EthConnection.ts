@@ -160,10 +160,11 @@ class EthConnection extends EventEmitter {
     );
   }
 
-  public setAccount(address: EthAddress): void {
+  public async setAccount(address: EthAddress) {
     const skey = localStorage.getItem(`skey-${address}`);
     if (skey) {
       this.signer = new Wallet(skey, this.provider);
+      await this.loadPlayerContract();
     } else {
       throw new Error('private key for address not found');
     }
