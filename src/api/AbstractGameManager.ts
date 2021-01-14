@@ -188,6 +188,8 @@ export default interface AbstractGameManager extends EventEmitter {
    */
   getAllPlanets(): Iterable<Planet>;
 
+  getFilteredPlanets(filterFn: (p: Planet) => boolean): Generator<Planet>;
+
   /**
    * Gets all voyages that have not completed.
    */

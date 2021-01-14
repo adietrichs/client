@@ -426,8 +426,16 @@ export class GameEntityMemoryStore {
     return this.planets.values();
   }
 
+  public* getFilteredPlanets(filterFn: (p: Planet) => boolean): Generator<Planet> {
+    for(const planet of this.planets.values()) {
+      if (filterFn(planet)) {
+        yield planet;
+      }
+    }
+  }
+
   public getAllOwnedPlanets(): Planet[] {
-    return Array.from(this.planets.values()).filter(hasOwner);
+    return Array.from(this.getFilteredPlanets(hasOwner));
   }
 
   public getAllVoyages(): QueuedArrival[] {

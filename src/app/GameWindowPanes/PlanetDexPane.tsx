@@ -378,8 +378,7 @@ export function PlanetDexPane({
     const myAddr = uiManager.getAccount();
     if (!myAddr) return;
     const ownedPlanets = uiManager
-      .getAllOwnedPlanets()
-      .filter((planet) => planet.owner === myAddr);
+      .getMyPlanets();
     setPlanets(ownedPlanets);
   }, [visible, uiManager]);
 
@@ -391,8 +390,7 @@ export function PlanetDexPane({
       const myAddr = uiManager.getAccount();
       if (!myAddr) return;
       const ownedPlanets = uiManager
-        .getAllOwnedPlanets()
-        .filter((planet) => planet.owner === myAddr);
+        .getMyPlanets();
       setPlanets(ownedPlanets);
     };
 

@@ -677,6 +677,10 @@ class GameUIManager extends EventEmitter implements AbstractUIManager {
     return this.gameManager.getAllOwnedPlanets();
   }
 
+  getMyPlanets(): Planet[] {
+    return this.gameManager.getMyPlanets();
+  }
+
   getAllVoyages(): QueuedArrival[] {
     return this.gameManager.getAllVoyages();
   }

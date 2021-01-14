@@ -63,6 +63,7 @@ export default interface AbstractUIManager {
   getPlanetLevel(planetId: LocationId): PlanetLevel | null;
   getPlanetDetailLevel(planetId: LocationId): number | null;
   getAllOwnedPlanets(): Planet[];
+  getMyPlanets(): Planet[];
   getAllVoyages(): QueuedArrival[];
   getUnconfirmedMoves(): UnconfirmedMove[];
   getLocationOfPlanet(planetId: LocationId): Location | null;

@@ -74,6 +74,7 @@ import {
   hexifyBigIntNestedArray,
   locationFromCoords,
   moveShipsDecay,
+  hasOwner,
 } from '../utils/Utils';
 import NotificationManager from '../utils/NotificationManager';
 import { SerializedPlugin } from '../plugins/SerializedPlugin';
@@ -478,7 +479,7 @@ class GameManager extends EventEmitter implements AbstractGameManager {
   }
 
   public getWorldSilver(): number {
-    return this.getAllOwnedPlanets().reduce(
+    return Array.from(this.getFilteredPlanets(planet => hasOwner(planet) && planet.silver !== 0)).reduce(
       (totalSoFar: number, nextPlanet: Planet) =>
         totalSoFar + nextPlanet.silver,
       0
@@ -494,8 +495,7 @@ class GameManager extends EventEmitter implements AbstractGameManager {
   }
 
   public getSilverOfPlayer(player: EthAddress): number {
-    return this.getAllOwnedPlanets()
-      .filter((planet) => planet.owner === player)
+    return Array.from(this.getFilteredPlanets(planet => planet.owner === player && planet.silver !== 0))
       .reduce(
         (totalSoFar: number, nextPlanet: Planet) =>
           totalSoFar + nextPlanet.silver,
@@ -504,8 +504,7 @@ class GameManager extends EventEmitter implements AbstractGameManager {
   }
 
   public getEnergyOfPlayer(player: EthAddress): number {
-    return this.getAllOwnedPlanets()
-      .filter((planet) => planet.owner === player)
+    return Array.from(this.getFilteredPlanets(planet => planet.owner === player))
       .reduce(
         (totalSoFar: number, nextPlanet: Planet) =>
           totalSoFar + nextPlanet.energy,
@@ -627,14 +626,16 @@ class GameManager extends EventEmitter implements AbstractGameManager {
     return this.entityStore.getAllPlanets();
   }
 
+  getFilteredPlanets(filterFn: (p: Planet) => boolean): Generator<Planet> {
+    return this.entityStore.getFilteredPlanets(filterFn);
+  }
+
   getAllOwnedPlanets(): Planet[] {
     return this.entityStore.getAllOwnedPlanets();
   }
 
   getMyPlanets(): Planet[] {
-    return this.getAllOwnedPlanets().filter(
-      (planet) => planet.owner === this.account
-    );
+    return Array.from(this.getFilteredPlanets(planet => planet.owner === this.account));
   }
 
   spaceTypeFromPerlin(perlin: number): SpaceType {
